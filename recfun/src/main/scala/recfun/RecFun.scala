@@ -20,6 +20,11 @@ object RecFun extends RecFunInterface {
     println(balance(":-)".toList))
     println(balance("())(".toList))
 
+    println()
+
+    // 3
+    println("Counting Change")
+    println(countChange(4, List(1, 2)))
   }
 
   /**
@@ -34,29 +39,26 @@ object RecFun extends RecFunInterface {
    * Exercise 2
    */
   def balance(chars: List[Char]): Boolean = {
-    println(f"chars: ${chars.mkString}")
-
-    def is
-
-    var i = 0
-    val leftIdx = chars.indexOf('(')
-    val rightIdx = chars.indexOf(')')
-
-    if (leftIdx < 0 && rightIdx < 0) true
-    else if (leftIdx > 0 && rightIdx > 0) balance(chars)
-    else false
-
-
-//    if (chars.isEmpty) true
-//    else if (chars.length == 1) false
-//    else if (chars.head == '(' && chars.last == ')') balance(chars.slice(1, chars.length-1))
-//    else if (chars.head == '(') balance(chars.slice(0, chars.length-1))
-//    else if (chars.last == ')') balance(chars.slice(1, chars.length))
-//    else balance(chars.slice(1, chars.length-1))
+    def balance0(input: List[Char], cnt: Int): Boolean = {
+      if (cnt < 0) false
+      else if (input.isEmpty) cnt == 0
+      else if (input.head == '(') balance0(input.tail, cnt + 1)
+      else if (input.head == ')') balance0(input.tail, cnt - 1)
+      else balance0(input.tail, cnt)
+    }
+    balance0(chars, 0)
   }
 
   /**
    * Exercise 3
    */
-  def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int = {
+    def countChange0(money: Int, coin: Int): Int = {
+      val newMoney = money - coin
+      if (newMoney < 0) 0
+      else if (newMoney == 0) 1
+      else coins.filter(c => c <= coin).map(c => countChange0(newMoney, c)).sum
+    }
+    coins.map(coin => countChange0(money, coin)).sum
+  }
 }
